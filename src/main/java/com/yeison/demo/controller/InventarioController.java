@@ -57,4 +57,5 @@ public class InventarioController {
     private ResponseEntity<Boolean> delete(@PathVariable("id") String id) {
         return new ResponseEntity<>(service.delete(Integer.parseInt(id)), HttpStatus.OK);
     }
+
 }
