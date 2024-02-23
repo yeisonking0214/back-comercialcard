@@ -1,13 +1,16 @@
 package com.yeison.demo.service.impl;
 
-import com.yeison.demo.domain.Product;
+import com.yeison.demo.domain.Producto;
 import com.yeison.demo.repository.InventarioRepository;
 import com.yeison.demo.service.InventarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -15,55 +18,52 @@ public class InventarioServiceImpl implements InventarioService {
 
     private final InventarioRepository repository;
 
-    @Override
-    public Product save() {
-
-        Product productToSave = Product.builder()
-                .nombre("Teléfono inteligente Samsung Galaxy A32")
-                .descripcion("Teléfono inteligente con pantalla Super AMOLED de 6.4 pulgadas, cámara cuádruple de 64 MP y batería de larga duración.")
-                .precio(589900)
-                .stock(50)
-                .build();
-
-        repository.save(productToSave);
-
-        return productToSave;
-    }
 
     @Override
-    public List<Product> getAll() {
+    public List<Producto> getAll() {
         return repository.findAll();
     }
-
     @Override
-    public Product saveProduct(@RequestBody Product product) {
-
-        Product productToSave = Product.builder()
-                .nombre("Teléfono inteligente Samsung Galaxy A32")
-                .descripcion("Teléfono inteligente con pantalla Super AMOLED de 6.4 pulgadas, cámara cuádruple de 64 MP y batería de larga duración.")
-                .precio(589900)
-                .stock(50)
-                .build();
-
-        repository.save(productToSave);
-
-        return productToSave;
+    public Boolean editProduct(int id) {
+        Producto product = repository.findById(id).get();
+        repository.save(product);
+        return true;
     }
 
     @Override
-    public Product getProductById(int id) {
+    public Map<String, Object> getInventoryData() {
+        Map<String, Object> responseData = new HashMap<>();
+        Producto productoMayorPrecio = repository.findProductWithMaxPrice();
+        BigDecimal valorTotalInventario = repository.getTotalInventoryValue();
+        responseData.put("productoMayorPrecio", productoMayorPrecio);
+        responseData.put("valorTotalInventario", valorTotalInventario);
+
+        return responseData;
+    }
+
+    @Override
+    public Map<String, Object> getProductsCombinationByPrice(Double precio) {
+        Map<String, Object> responseData = new HashMap<>();
+        return responseData;
+    }
+
+
+    @Override
+    public Producto saveProduct(@RequestBody Producto product) {
+        repository.save(product);
+        return product;
+    }
+
+    @Override
+    public Producto getProductById(int id) {
 
         return repository.findById(id).get();
     }
 
     @Override
     public Boolean delete(int id) {
-        Product product = repository.findById(id).get();
-        try {
-            repository.delete(product);
-            return true;
-        } catch (Error error) {
-            return false;
-        }
+        Producto product = repository.findById(id).get();
+        repository.delete(product);
+        return true;
     }
 }

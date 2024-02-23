@@ -1,18 +1,24 @@
 package com.yeison.demo.service;
 
-import com.yeison.demo.domain.Product;
+import com.yeison.demo.domain.Producto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface InventarioService {
 
-    Product save();
 
-    List<Product> getAll();
+    List<Producto> getAll();
 
-    Product saveProduct(Product product);
+    Map<String, Object> getInventoryData();
+
+    Map<String, Object> getProductsCombinationByPrice(Double precio);
+
+    Producto saveProduct(Producto product);
 
     Boolean delete(int id);
 
-    Product getProductById(int id);
+    Producto getProductById(int id);
+
+    Boolean editProduct(int id);
 }

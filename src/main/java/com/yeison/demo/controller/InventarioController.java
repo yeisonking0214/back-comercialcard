@@ -1,8 +1,7 @@
 package com.yeison.demo.controller;
 
-import com.yeison.demo.domain.Product;
+import com.yeison.demo.domain.Producto;
 import com.yeison.demo.service.InventarioService;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,40 +9,52 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/inventario")
 public class InventarioController {
 
     private final InventarioService service;
 
-    @GetMapping("/test")
-    private ResponseEntity<Product> test() {
-
-        Product response = service.save();
-
+    @PostMapping("/productos")
+    private ResponseEntity<Producto> save(@RequestBody Producto producto) {
+        Producto response = service.saveProduct(producto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    private ResponseEntity<List<Product>> getAll() {
-        List<Product> response = service.getAll();
+    @GetMapping("/productos")
+    private ResponseEntity<List<Producto>> getAll() {
+        List<Producto> response = service.getAll();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/test/{id}")
-    private ResponseEntity<Product> getById(@PathVariable("id") String id) {
+    @GetMapping("/productos/combinacion")
+    private ResponseEntity<Map<String, Object>> getProductsCombinationByPrice(@PathVariable Double precio) {
+        return new ResponseEntity<>(service.getProductsCombinationByPrice(precio), HttpStatus.OK);
+    }
+
+    @GetMapping("/info")
+    private ResponseEntity<Map<String, Object>> getPInventoryData() {
+        Map<String, Object> response = service.getInventoryData();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/productos/{id}")
+    private ResponseEntity<Producto> getById(@PathVariable("id") String id) {
         return new ResponseEntity<>(service.getProductById(Integer.parseInt(id)), HttpStatus.OK);
     }
 
-    @GetMapping("/delete/{id}")
-    private ResponseEntity<Boolean> delete(@PathVariable("id") String id) {
-        return new ResponseEntity<>(service.delete(Integer.parseInt(id)), HttpStatus.OK);
+
+    @PutMapping("/productos/{id}")
+    private ResponseEntity<Boolean> editProduct(@PathVariable("id") String id) {
+        return new ResponseEntity<>(service.editProduct(Integer.parseInt(id)), HttpStatus.OK);
     }
 
-    @PostMapping("/test")
-    private ResponseEntity<String> testePost() {
-        return new ResponseEntity<>("true post", HttpStatus.OK);
+    @DeleteMapping("/productos/{id}")
+    private ResponseEntity<Boolean> delete(@PathVariable("id") String id) {
+        return new ResponseEntity<>(service.delete(Integer.parseInt(id)), HttpStatus.OK);
     }
 }

@@ -1,13 +1,12 @@
 package com.yeison.demo.repository;
 
-import com.yeison.demo.domain.Product;
+import com.yeison.demo.domain.Producto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+import java.math.BigDecimal;
 
-public interface InventarioRepository extends JpaRepository<Product, Integer> {
+public interface InventarioRepository extends JpaRepository<Producto, Integer> {
 
     // JPQL
     //@Query(value = "SELECT * FROM Producto WHERE ", nativeQuery = true)
@@ -18,4 +17,11 @@ public interface InventarioRepository extends JpaRepository<Product, Integer> {
     //List<Product> crear();
 
     //List<Product> getProductWhereNameIsMaria();
+
+
+    @Query("SELECT p FROM Producto p WHERE p.precio = (SELECT MAX(precio) FROM Producto)")
+    Producto findProductWithMaxPrice();
+
+    @Query("SELECT CAST(SUM(p.precio * p.stock) AS java.math.BigDecimal) FROM Producto p")
+    BigDecimal getTotalInventoryValue();
 }
